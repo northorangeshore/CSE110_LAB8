@@ -33,18 +33,13 @@ async function init() {
  * of installing it and getting it running
  */
 function initializeServiceWorker() {
-  // B1. Check if service workers are supported
   if ('serviceWorker' in navigator) {
-    // B2. Listen for the window's 'load' event
     window.addEventListener('load', () => {
-      // B3. Register the service worker
       navigator.serviceWorker.register('./sw.js')
         .then((registration) => {
-          // B4. Successfully registered
           console.log('Service Worker registered successfully:', registration);
         })
         .catch((error) => {
-          // B5. Failed to register
           console.error('Service Worker registration failed:', error);
         });
     });
@@ -65,43 +60,34 @@ function initializeServiceWorker() {
 // const RECIPE_URLS = ['https://example.com/recipe1.json', 'https://example.com/recipe2.json'];
 
 async function getRecipes() {
-  // A1. Check local storage for existing recipes
-  const localData = localStorage.getItem('recipes');
-  if (localData) {
-    return JSON.parse(localData);
+  const checkRecipes = localStorage.getItem('recipes');
+  if (checkRecipes) {
+    return JSON.parse(checkRecipes);
   }
 
-  // A2. Create an empty array to hold the fetched recipes
+
   const recipes = [];
 
-  // A3. Return a new Promise
+
   return new Promise(async (resolve, reject) => {
-    // A4. Loop through each URL in RECIPE_URLS
+
     for (let i = 0; i < RECIPE_URLS.length; i++) {
       const url = RECIPE_URLS[i];
       try {
-        // A6. Fetch the URL
+ 
         const response = await fetch(url);
-
-        // A7. Retrieve the JSON
         const recipe = await response.json();
-
-        // A8. Add the recipe to the array
         recipes.push(recipe);
-
-        // A9. Check if we've fetched all recipes
+   
         if (recipes.length === RECIPE_URLS.length) {
-          // Save to localStorage
+
           localStorage.setItem('recipes', JSON.stringify(recipes));
-          // Resolve the promise
           resolve(recipes);
         }
       } catch (error) {
-        // A10. Log any errors
         console.error('Failed to fetch recipe:', error);
-        // A11. Reject the promise
         reject(error);
-        break; // exit the loop if one fails
+        break;
       }
     }
   });
